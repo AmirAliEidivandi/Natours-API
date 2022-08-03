@@ -8,7 +8,7 @@ const tourSchema = new mongoose.Schema({
     rating: {
         type: Number,
         default: 4.5,
-        unique: true
+        unique: true,
     },
     price: {
         type: Number,
@@ -16,4 +16,6 @@ const tourSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model("Tour", tourSchema);
+const Tour = mongoose.model("Tour", tourSchema);
+
+module.exports = Tour;
