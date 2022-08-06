@@ -1,14 +1,14 @@
 const Tour = require("../models/tour.model");
-const APIFeatures = require('../utils/api.features');
+const APIFeatures = require("../utils/api.features");
 
-const aliasTopTours = (req, res, next) => {
+exports.aliasTopTours = (req, res, next) => {
     req.query.limit = "5";
     req.query.sort = "-ratingsAverage,price";
     req.query.fields = "name,price,ratingsAverage,summary,difficulty";
     next();
 };
 
-const getAllTours = async (req, res) => {
+exports.getAllTours = async (req, res) => {
     try {
         // excute query
         const features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate();
@@ -30,7 +30,7 @@ const getAllTours = async (req, res) => {
     }
 };
 
-const getTour = async (req, res) => {
+exports.getTour = async (req, res) => {
     const { id } = req.params;
     try {
         const tour = await Tour.findById(id);
@@ -48,7 +48,7 @@ const getTour = async (req, res) => {
     }
 };
 
-const createTour = async (req, res) => {
+exports.createTour = async (req, res) => {
     try {
         const newTour = await Tour.create(req.body);
 
@@ -66,7 +66,7 @@ const createTour = async (req, res) => {
     }
 };
 
-const updateTour = async (req, res) => {
+exports.updateTour = async (req, res) => {
     try {
         const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
 
@@ -84,7 +84,7 @@ const updateTour = async (req, res) => {
     }
 };
 
-const deleteTour = async (req, res) => {
+exports.deleteTour = async (req, res) => {
     try {
         await Tour.findByIdAndDelete(req.params.id);
         res.status(200).json({
@@ -99,11 +99,41 @@ const deleteTour = async (req, res) => {
     }
 };
 
-module.exports = {
-    aliasTopTours,
-    getAllTours,
-    getTour,
-    createTour,
-    updateTour,
-    deleteTour,
+exports.getTourStats = async (req, res) => {
+    try {
+        const stats = await Tour.aggregate([
+            {
+                $match: { ratingsAverage: { $gte: 4.5 } },
+            },
+            {
+                $group: {
+                    _id: { $toUpper: "$difficulty" },
+                    numTours: { $sum: 1 },
+                    numRatings: { $sum: "$ratingsQuantity" },
+                    avgRating: { $avg: "$ratingsAverage" },
+                    avgPrice: { $avg: "$price" },
+                    minPrice: { $min: "$price" },
+                    maxPrice: { $max: "$price" },
+                },
+            },
+            {
+                $sort: { avgPrice: 1 },
+            },
+            // {
+            //     $match: { _id: { $ne: 'EASY' } }
+            // }
+        ]);
+
+        res.status(200).json({
+            status: "success",
+            data: {
+                stats,
+            },
+        });
+    } catch (error) {
+        res.status(404).json({
+            status: "fail",
+            message: error,
+        });
+    }
 };
