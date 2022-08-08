@@ -2,6 +2,7 @@
     "extends": ["airbnb", "prettier", "plugin:node/recommended"],
     "plugins": ["prettier"],
     "rules": {
+        "no-undef":"off",
         "prefer-arrow-callback":"off",
         "prefer-object-spread": "off",
         "prettier/prettier": "off",
