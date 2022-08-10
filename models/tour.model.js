@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const slugify = require("slugify");
-// const validator = require("validator");
+// const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
     {
@@ -10,8 +10,8 @@ const tourSchema = new mongoose.Schema(
             unique: true,
             trim: true,
             maxlength: [40, "A tour name must have less or equal then 40 characters"],
-            minlength: [10, "A tour name must have more or equal then 40 characters"],
-            // validate: [validator.isAlpha, "Tour name must only contain characters"],
+            minlength: [10, "A tour name must have more or equal then 10 characters"],
+            // validate: [validator.isAlpha, 'Tour name must only contain characters']
         },
         slug: String,
         duration: {
@@ -26,7 +26,7 @@ const tourSchema = new mongoose.Schema(
             type: String,
             required: [true, "A tour must have a difficulty"],
             enum: {
-                values: ["easy", "medium", "difficulty"],
+                values: ["easy", "medium", "difficult"],
                 message: "Difficulty is either: easy, medium, difficult",
             },
         },
@@ -48,7 +48,7 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             validate: {
                 validator: function (val) {
-                    // this only points to current doc on new document
+                    // this only points to current doc on NEW document creation
                     return val < this.price;
                 },
                 message: "Discount price ({VALUE}) should be below regular price",
@@ -89,13 +89,24 @@ tourSchema.virtual("durationWeeks").get(function () {
     return this.duration / 7;
 });
 
-// DOCUMENT MIDDLEWARE: runs before .save() and .create() .insertMany
+// DOCUMENT MIDDLEWARE: runs before .save() and .create()
 tourSchema.pre("save", function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
 
+// tourSchema.pre('save', function(next) {
+//   console.log('Will save document...');
+//   next();
+// });
+
+// tourSchema.post('save', function(doc, next) {
+//   console.log(doc);
+//   next();
+// });
+
 // QUERY MIDDLEWARE
+// tourSchema.pre('find', function(next) {
 tourSchema.pre(/^find/, function (next) {
     this.find({ secretTour: { $ne: true } });
 
@@ -110,7 +121,7 @@ tourSchema.post(/^find/, function (docs, next) {
 
 // AGGREGATION MIDDLEWARE
 tourSchema.pre("aggregate", function (next) {
-    this.pipeline().unshift({ $match: { $secretTour: { $ne: true } } });
+    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
 
     console.log(this.pipeline());
     next();
