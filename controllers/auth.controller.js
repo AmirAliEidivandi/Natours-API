@@ -11,5 +11,3 @@ exports.signup = catchAsync(async (req, res, next) => {
         },
     });
 });
-
-console.log('hello');
