@@ -81,3 +81,5 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = currentUser;
     next();
 });
+
+exports.restrictTour = catchAsync(async (req, res, next) => {})

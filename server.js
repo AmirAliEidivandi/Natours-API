@@ -14,11 +14,11 @@ mongoose
     .connect(DB, {
         useNewUrlParser: true,
     })
-    .then(() => console.log("DB connection successful!"));
+    .then(() => console.log("DB connection successful!".cyan.bold.underline));
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
-    console.log(`App running on port ${port}...`);
+    console.log(`App running on port ${port}...`.cyan.bold);
 });
 
 process.on("unhandledRejection", (err) => {

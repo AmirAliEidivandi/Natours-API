@@ -1,5 +1,6 @@
 const express = require("express");
 const morgan = require("morgan");
+require("colors");
 
 const app = express();
 const AppError = require("./utils/app.error");
