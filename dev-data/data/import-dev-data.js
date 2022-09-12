@@ -1,7 +1,7 @@
 const fs = require("fs");
 const mongoose = require("mongoose");
 require("dotenv").config({ path: "./config.env" });
-const Tour = require("../../models/tour.model");
+const Tour = require("../../models/tourModel");
 
 const DB = process.env.DATABASE.replace("<PASSWORD>", process.env.DATABASE_PASSWORD);
 
@@ -10,31 +10,29 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => {
-        console.log("DB connection successful!");
-    });
+    .then(() => console.log("DB connection successful!"));
 
-// read json file
+// READ JSON FILE
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, "utf-8"));
 
-// import data into db
+// IMPORT DATA INTO DB
 const importData = async () => {
     try {
         await Tour.create(tours);
         console.log("Data successfully loaded!");
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
     }
     process.exit();
 };
 
-// delete all data from db
+// DELETE ALL DATA FROM DB
 const deleteData = async () => {
     try {
         await Tour.deleteMany();
         console.log("Data successfully deleted!");
-    } catch (error) {
-        console.log(error);
+    } catch (err) {
+        console.log(err);
     }
     process.exit();
 };

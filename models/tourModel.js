@@ -48,6 +48,7 @@ const tourSchema = new mongoose.Schema(
             type: Number,
             validate: {
                 validator: function (val) {
+                    // this only points to current doc on NEW document creation
                     return val < this.price;
                 },
                 message: "Discount price ({VALUE}) should be below regular price",
@@ -93,6 +94,16 @@ tourSchema.pre("save", function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
+
+// tourSchema.pre('save', function(next) {
+//   console.log('Will save document...');
+//   next();
+// });
+
+// tourSchema.post('save', function(doc, next) {
+//   console.log(doc);
+//   next();
+// });
 
 // QUERY MIDDLEWARE
 // tourSchema.pre('find', function(next) {

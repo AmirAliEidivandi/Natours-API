@@ -1,7 +1,7 @@
-const Tour = require("../models/tour.model");
-const APIFeatures = require("../utils/api.features");
-const catchAsync = require("../utils/catch.async");
-const AppError = require("../utils/app.error");
+const Tour = require("../models/tourModel");
+const APIFeatures = require("../utils/apiFeatures");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
 
 exports.aliasTopTours = (req, res, next) => {
     req.query.limit = "5";
@@ -14,6 +14,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
     const features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate();
     const tours = await features.query;
 
+    // SEND RESPONSE
     res.status(200).json({
         status: "success",
         results: tours.length,
@@ -25,6 +26,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 
 exports.getTour = catchAsync(async (req, res, next) => {
     const tour = await Tour.findById(req.params.id);
+    // Tour.findOne({ _id: req.params.id })
 
     if (!tour) {
         return next(new AppError("No tour found with that ID", 404));
@@ -99,6 +101,9 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
         {
             $sort: { avgPrice: 1 },
         },
+        // {
+        //   $match: { _id: { $ne: 'EASY' } }
+        // }
     ]);
 
     res.status(200).json({
