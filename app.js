@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const hpp = require("hpp");
-require('colors');
+require("colors");
 
 const app = express();
 const AppError = require("./utils/appError");
