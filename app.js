@@ -8,9 +8,11 @@ const hpp = require("hpp");
 require("colors");
 
 const app = express();
-const AppError = require("./utils/appError");
+const {AppError} = require("./utils");
 const globalErrorHandler = require("./controllers/errorController");
-const { reviewRouter, tourRouter, userRouter } = require("./routes");
+const userRouter = require("./routes/user.routes");
+const tourRouter = require("./routes/tour.routes");
+const reviewRouter = require("./routes/review.routes");
 
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
