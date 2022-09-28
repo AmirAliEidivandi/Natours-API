@@ -19,6 +19,8 @@ router.route("/tours-within/:distance/center/:latlng/unit/:unit").get(getToursWh
 // /tours-distance?distance=233&center=-40,45&unit=mi
 // /tours-distance/233/center/-40,45/unit/mi
 
+router.route('/distances/:latlng/unit/:unit').get(getDistances)
+
 router.route("/").get(getAllTours).post(protect, restrictTo("admin", "lead-guide"), createTour);
 router.route("/:id").get(getTour).patch(protect, restrictTo("admin", "lead-guide"), updateTour).delete(protect, restrictTo("admin", "lead-guide"), deleteTour);
 
