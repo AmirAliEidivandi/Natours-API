@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { aliasTopTours, createTour, deleteTour, getAllTours, getMonthlyPlan, getTour, getTourStats, updateTour, getToursWhitin } = require("../controllers/tourController");
+const { aliasTopTours, createTour, deleteTour, getAllTours, getMonthlyPlan, getTour, getTourStats, updateTour, getToursWhitin, getDistances } = require("../controllers/tourController");
 const { protect, restrictTo } = require("../controllers/authController");
 const reviewRouter = require("./review.routes");
 
