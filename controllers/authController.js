@@ -32,7 +32,12 @@ const createSendToken = (user, statusCode, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    const newUser = await User.create(req.body);
+    const newUser = await User.create({
+        name: req.body.name,
+        email: req.body.email,
+        password: req.body.password,
+        passwordConfirm: req.body.passwordConfirm,
+    });
 
     createSendToken(newUser, 201, res);
 });
@@ -84,6 +89,33 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.user = currentUser;
     next();
 });
+
+exports.isLoggedIn = async (req, res, next) => {
+    if (req.cookies.jwt) {
+        try {
+            // 1) verify token
+            const decoded = await promisify(jwt.verify)(req.cookies.jwt, proccess.env.JWT_SECRET);
+
+            // 2) Check if user still exists
+            const currentUser = await User.findById(decoded.id);
+            if (!currentUser) {
+                return next();
+            }
+
+            // 3) Check if user changed password after the token was issued
+            if (currentUser.changedPasswordAfter(decoded.iat)) {
+                return next();
+            }
+
+            // THERE IS A LOGGED IN USER
+            res.locals.user = currentUser;
+            return next();
+        } catch (error) {
+            return next();
+        }
+    }
+    next();
+};
 
 exports.restrictTo =
     (...roles) =>
