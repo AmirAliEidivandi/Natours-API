@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { aliasTopTours, createTour, deleteTour, getAllTours, getMonthlyPlan, getTour, getTourStats, updateTour, getToursWhitin, getDistances } = require("../controllers/tourController");
+const { aliasTopTours, createTour, deleteTour, getAllTours, getMonthlyPlan, getTour, getTourStats, updateTour, getToursWithin, getDistances } = require("../controllers/tourController");
 const { protect, restrictTo } = require("../controllers/authController");
 const reviewRouter = require("./review.routes");
 
@@ -15,7 +15,7 @@ router.route("/top-5-cheap").get(aliasTopTours, getAllTours);
 router.route("/tour-stats").get(getTourStats);
 router.route("/monthly-plan/:year").get(protect, restrictTo("admin", "lead-guide", "guide"), getMonthlyPlan);
 
-router.route("/tours-within/:distance/center/:latlng/unit/:unit").get(getToursWhitin);
+router.route("/tours-within/:distance/center/:latlng/unit/:unit").get(getToursWithin);
 // /tours-distance?distance=233&center=-40,45&unit=mi
 // /tours-distance/233/center/-40,45/unit/mi
 
